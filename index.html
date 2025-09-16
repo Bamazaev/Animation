@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>new</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .main-container {
+      position: relative;
+      width: 607px;
+      height: 1080px;
+      background-image: url('assets/bg.jpg');
+      background-size: cover;
+      background-position: center;
+      overflow: hidden;
+    }
+    .main-container img {
+      position: absolute;
+    }
+    /* Animation for scaling up and down (kalon-mayda) */
+    @keyframes scaleUpDown {
+      0% { transform: scale(1);}
+      50% { transform: scale(1.25);}
+      100% { transform: scale(1);}
+    }
+    .anim-scaleUpDown {
+      animation: scaleUpDown 2.2s ease-in-out infinite;
+    }
+    /* Keyframes for random movement */
+    @keyframes moveRandom {
+      0% {
+        transform: translate(var(--start-x), var(--start-y)) scale(1);
+      }
+      100% {
+        transform: translate(var(--end-x), var(--end-y)) scale(1.25);
+      }
+    }
+    .anor-move {
+      /* Use cubic-bezier for smooth, natural movement */
+      animation: moveRandom var(--duration, 4s) cubic-bezier(0.4, 0.0, 0.2, 1) infinite alternate;
+      will-change: transform;
+    }
+  </style>
+</head>
+<body>
+  <div class="main-container">
+    <img src="assets/bottle.png" alt="Bottle" id="bottle" style="bottom: 140px; left: 100px; width:200px;" class="anim-scaleUpDown">
+    <img src="assets/bottle1.png" alt="Bottle1" id="bottle1" style="bottom: 0px; left: 60px; width:600px;" class="anim-scaleUpDown">
+    <img src="assets/anor.png" alt="Anor" id="anor" style="bottom: 250px; left: -150px; width:250px;" class="anim-scaleUpDown">
+    <img src="assets/ice.png" alt="Ice Right" id="ice-right" style="bottom: 220px; left: 440px; width:130px;" class="anim-scaleUpDown">
+    <img src="assets/ice.png" alt="Ice Left" id="ice-left" style="bottom: 220px; left: 40px; width:100px;" class="anim-scaleUpDown">
+    <img src="assets/can.png" alt="Can" id="can" style="bottom: -170px; left: -120px; width:300px;" class="anim-scaleUpDown">
+    <div id="anor-random-container" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none;"></div>
+  </div>
+  <script>
+    // Helper to get a random edge position (returns {x, y})
+    function getRandomEdgePosition(imgWidth, imgHeight) {
+      const containerWidth = 607;
+      const containerHeight = 1080;
+      const edge = Math.floor(Math.random() * 4);
+      let x, y;
+      switch (edge) {
+        case 0: // top
+          y = 0;
+          x = Math.random() * (containerWidth - imgWidth);
+          break;
+        case 1: // right
+          x = containerWidth - imgWidth;
+          y = Math.random() * (containerHeight - imgHeight);
+          break;
+        case 2: // bottom
+          y = containerHeight - imgHeight;
+          x = Math.random() * (containerWidth - imgWidth);
+          break;
+        case 3: // left
+          x = 0;
+          y = Math.random() * (containerHeight - imgHeight);
+          break;
+      }
+      return { x, y };
+    }
+
+    const anorContainer = document.getElementById('anor-random-container');
+    const imgCount = 10;
+    const imgWidth = 160;
+    const imgHeight = 160;
+
+    for (let i = 0; i < imgCount; i++) {
+      const img = document.createElement('img');
+      img.src = 'assets/donai anor.png';
+      img.alt = 'Anor Random';
+      img.style.width = imgWidth + 'px';
+      img.style.height = imgHeight + 'px';
+      img.style.position = 'absolute';
+      img.style.pointerEvents = 'none';
+
+      // Get two random edge positions for animation start and end
+      const start = getRandomEdgePosition(imgWidth, imgHeight);
+      let end;
+      // Ensure end is not too close to start
+      do {
+        end = getRandomEdgePosition(imgWidth, imgHeight);
+      } while (Math.abs(end.x - start.x) < 100 && Math.abs(end.y - start.y) < 100);
+
+      // Set the image at the start position
+      img.style.left = start.x + 'px';
+      img.style.top = start.y + 'px';
+
+      // Set CSS variables for animation
+      img.style.setProperty('--start-x', '0px');
+      img.style.setProperty('--start-y', '0px');
+      img.style.setProperty('--end-x', (end.x - start.x) + 'px');
+      img.style.setProperty('--end-y', (end.y - start.y) + 'px');
+      // Make duration longer and more consistent for smoothness
+      img.style.setProperty('--duration', (5 + Math.random() * 2) + 's');
+      // Make animation delay less abrupt
+      img.style.animationDelay = (Math.random() * 1.5) + 's';
+
+      img.classList.add('anim-scaleUpDown', 'anor-move');
+      anorContainer.appendChild(img);
+    }
+  </script>
+</body>
+</html>
