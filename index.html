@@ -27,31 +27,184 @@
     .anim-scaleUpDown {
       animation: scaleUpDown 2.2s ease-in-out infinite;
     }
-    /* Keyframes for random movement */
-    @keyframes moveRandom {
+    /* Animation for bottle.png and bottle1.png to scale up slowly over 7s */
+    @keyframes scaleUpSlow7s {
+      0% { transform: scale(0.33);}
+      100% { transform: scale(1.25);}
+    }
+    .anim-scaleUpSlow7s {
+      animation: scaleUpSlow7s 7s cubic-bezier(0.4,0,0.2,1) forwards;
+    }
+
+    /* --- NEW: Very slow, smooth, almost imperceptible floating for bottle and bottle1 --- */
+    @keyframes bottleFloatSubtle {
+      0%   { transform: translateY(0px) scale(1);}
+      20%  { transform: translateY(-1.5px) scale(1.008);}
+      40%  { transform: translateY(1.5px) scale(0.995);}
+      60%  { transform: translateY(-1.2px) scale(1.006);}
+      80%  { transform: translateY(1.2px) scale(0.997);}
+      100% { transform: translateY(0px) scale(1);}
+    }
+    .anim-bottle-float {
+      animation: bottleFloatSubtle 22s ease-in-out infinite;
+      will-change: transform;
+    }
+    /* On hover: slightly more visible floating/jitter */
+    @keyframes bottleFloatHover {
+      0%   { transform: translateY(0px) scale(1);}
+      10%  { transform: translateY(-4px) scale(1.015);}
+      20%  { transform: translateY(2px) scale(0.99);}
+      30%  { transform: translateY(-3px) scale(1.01);}
+      40%  { transform: translateY(3px) scale(0.995);}
+      50%  { transform: translateY(-2px) scale(1.012);}
+      60%  { transform: translateY(2px) scale(0.99);}
+      70%  { transform: translateY(-1px) scale(1.008);}
+      80%  { transform: translateY(1px) scale(0.997);}
+      100% { transform: translateY(0px) scale(1);}
+    }
+    /* Remove default hover for each bottle, will handle in JS for both together */
+    /* Keyframes for random movement with rotation and slow, small scaling for donai anor */
+    @keyframes moveRandomAnor {
       0% {
-        transform: translate(var(--start-x), var(--start-y)) scale(1);
+        transform: translate(var(--start-x), var(--start-y)) scale(0.7) rotate(var(--start-rot, 0deg));
+        opacity: 0.85;
       }
       100% {
-        transform: translate(var(--end-x), var(--end-y)) scale(1.25);
+        transform: translate(var(--end-x), var(--end-y)) scale(0.85) rotate(var(--end-rot, 360deg));
+        opacity: 1;
       }
     }
     .anor-move {
-      /* Use cubic-bezier for smooth, natural movement */
-      animation: moveRandom var(--duration, 4s) cubic-bezier(0.4, 0.0, 0.2, 1) infinite alternate;
+      animation: moveRandomAnor var(--duration, 11s) cubic-bezier(0.4, 0.0, 0.2, 1) infinite alternate;
       will-change: transform;
+      z-index: 1000 !important;
+      pointer-events: none;
+    }
+
+    /* Animation for anor.png to move from left to 50% and scale up */
+    @keyframes anorEnterAndGrow {
+      0% {
+        left: -250px;
+        opacity: 0.7;
+        transform: scale(0.5);
+      }
+      
+    }
+
+    /* --- NEW: Subtle, slow floating for anor.png (main anor) --- */
+    @keyframes anorFloatSubtle {
+      0%   { transform: translateY(0px) scale(1.25) rotate(0deg); opacity: 1;}
+      20%  { transform: translateY(-2.5px) scale(1.26) rotate(-1.5deg); opacity: 0.97;}
+      40%  { transform: translateY(2.5px) scale(1.24) rotate(1.2deg); opacity: 0.98;}
+      60%  { transform: translateY(-2px) scale(1.258) rotate(-1deg); opacity: 0.96;}
+      80%  { transform: translateY(2px) scale(1.247) rotate(1deg); opacity: 0.99;}
+      100% { transform: translateY(0px) scale(1.25) rotate(0deg); opacity: 1;}
+    }
+    .anor-float {
+      animation: anorFloatSubtle 13s ease-in-out infinite;
+      will-change: transform, opacity;
+    }
+
+    #anor {
+      bottom: 250px;
+      left: -150px;
+      width: 250px;
+      z-index: 1; /* Under bottle.png */
+      animation: anorEnterAndGrow 7s cubic-bezier(0.4,0,0.2,1) forwards;
+      /* No translateX(-50%) so left:2% is respected */
+    }
+    #bottle {
+      z-index: 2; /* Above anor.png */
+    }
+    #bottle1 {
+      z-index: 3;
+    }
+    /* Make sure random anor images are above all */
+    #anor-random-container img {
+      z-index: 1000 !important;
+      pointer-events: none;
+    }
+    #anor-random-container {
+      z-index: 1000 !important;
+      pointer-events: none;
+    }
+
+    /* --- ICE ANIMATION --- */
+    /* Ice should be above all objects */
+    #ice-right, #ice-left {
+      z-index: 2000 !important;
+      pointer-events: none;
+    }
+
+    /* New: Very slow, smooth, from small to big, from left and right, then subtle floating */
+    @keyframes iceRightAppearGrowFloat {
+      0% {
+        left: 607px;
+        transform: scale(0.2) translateY(0px);
+        opacity: 0.0;
+      }
+      10% {
+        opacity: 0.7;
+      }
+      60% {
+        left: 440px;
+        transform: scale(1.1) translateY(0px);
+        opacity: 1;
+      }
+      100% {
+        left: 440px;
+        transform: scale(1.1) translateY(12px);
+        opacity: 1;
+      }
+    }
+    @keyframes iceLeftAppearGrowFloat {
+      0% {
+        left: -150px;
+        transform: scale(0.2) translateY(0px);
+        opacity: 0.0;
+      }
+      10% {
+        opacity: 0.7;
+      }
+      60% {
+        left: 40px;
+        transform: scale(1.0) translateY(0px);
+        opacity: 1;
+      }
+      100% {
+        left: 40px;
+        transform: scale(1.0) translateY(-12px);
+        opacity: 1;
+      }
+    }
+    .anim-ice-right {
+      animation: iceRightAppearGrowFloat 8s cubic-bezier(0.4,0,0.2,1) forwards, iceFloatRight 5s ease-in-out 8s infinite alternate;
+    }
+    .anim-ice-left {
+      animation: iceLeftAppearGrowFloat 8s cubic-bezier(0.4,0,0.2,1) forwards, iceFloatLeft 5s ease-in-out 8s infinite alternate;
+    }
+    /* Subtle floating after appearing */
+    @keyframes iceFloatRight {
+      0% { transform: scale(1.1) translateY(12px);}
+      50% { transform: scale(1.13) translateY(-8px);}
+      100% { transform: scale(1.1) translateY(12px);}
+    }
+    @keyframes iceFloatLeft {
+      0% { transform: scale(1.0) translateY(-12px);}
+      50% { transform: scale(1.03) translateY(8px);}
+      100% { transform: scale(1.0) translateY(-12px);}
     }
   </style>
 </head>
 <body>
   <div class="main-container">
-    <img src="assets/bottle.png" alt="Bottle" id="bottle" style="bottom: 140px; left: 100px; width:200px;" class="anim-scaleUpDown">
-    <img src="assets/bottle1.png" alt="Bottle1" id="bottle1" style="bottom: 0px; left: 60px; width:600px;" class="anim-scaleUpDown">
-    <img src="assets/anor.png" alt="Anor" id="anor" style="bottom: 250px; left: -150px; width:250px;" class="anim-scaleUpDown">
-    <img src="assets/ice.png" alt="Ice Right" id="ice-right" style="bottom: 220px; left: 440px; width:130px;" class="anim-scaleUpDown">
-    <img src="assets/ice.png" alt="Ice Left" id="ice-left" style="bottom: 220px; left: 40px; width:100px;" class="anim-scaleUpDown">
+    <img src="assets/bottle1.png" alt="Bottle1" id="bottle1" style="bottom: 0px; left: 60px; width:600px; opacity:0;" class="">
+    <img src="assets/bottle.png" alt="Bottle" id="bottle" style="bottom: 140px; left: 100px; width:200px; transform: scale(0.33); opacity:0;" class="">
+    <img src="assets/anor.png" alt="Anor" id="anor">
+    <img src="assets/ice.png" alt="Ice Right" id="ice-right" style="bottom: 220px; left: 607px; width:130px; z-index:2000; opacity:0; transform: scale(0.2);" class="anim-ice-right">
+    <img src="assets/ice.png" alt="Ice Left" id="ice-left" style="bottom: 220px; left: -150px; width:100px; z-index:2000; opacity:0; transform: scale(0.2);" class="anim-ice-left">
     <img src="assets/can.png" alt="Can" id="can" style="bottom: -170px; left: -120px; width:300px;" class="anim-scaleUpDown">
-    <div id="anor-random-container" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none;"></div>
+    <div id="anor-random-container" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index:1000;"></div>
   </div>
   <script>
     // Helper to get a random edge position (returns {x, y})
@@ -81,45 +234,111 @@
       return { x, y };
     }
 
-    const anorContainer = document.getElementById('anor-random-container');
-    const imgCount = 10;
-    const imgWidth = 160;
-    const imgHeight = 160;
+    // Animate bottle1 and bottle to scale up slowly over 7s from small to big, then float imperceptibly
+    window.addEventListener('DOMContentLoaded', function() {
+      const bottle1 = document.getElementById('bottle1');
+      const bottle = document.getElementById('bottle');
+      // Start both hidden and small, then fade in and scale up slowly
+      setTimeout(() => {
+        bottle1.style.opacity = '1';
+        bottle1.style.transform = 'scale(0.33)';
+        bottle1.classList.add('anim-scaleUpSlow7s');
+        bottle.style.opacity = '1';
+        bottle.classList.add('anim-scaleUpSlow7s');
+        // After scale up, add floating animation (very subtle)
+        setTimeout(() => {
+          bottle1.classList.add('anim-bottle-float');
+          bottle.classList.add('anim-bottle-float');
+        }, 7000);
+      }, 100); // slight delay to ensure DOM is ready
 
-    for (let i = 0; i < imgCount; i++) {
-      const img = document.createElement('img');
-      img.src = 'assets/donai anor.png';
-      img.alt = 'Anor Random';
-      img.style.width = imgWidth + 'px';
-      img.style.height = imgHeight + 'px';
-      img.style.position = 'absolute';
-      img.style.pointerEvents = 'none';
+      // --- Animate anor.png (main anor) to scale up and float subtly after entrance ---
+      const anor = document.getElementById('anor');
+      // Wait for the entrance animation to finish (7s), then add floating
+      setTimeout(() => {
+        anor.classList.add('anor-float');
+      }, 7000);
 
-      // Get two random edge positions for animation start and end
-      const start = getRandomEdgePosition(imgWidth, imgHeight);
-      let end;
-      // Ensure end is not too close to start
-      do {
-        end = getRandomEdgePosition(imgWidth, imgHeight);
-      } while (Math.abs(end.x - start.x) < 100 && Math.abs(end.y - start.y) < 100);
+      // --- Hover both bottles together ---
+      // Helper to add/remove hover animation to both bottles
+      function setBottlesHoverState(isHover) {
+        if (isHover) {
+          bottle1.classList.add('bottle-hovering');
+          bottle.classList.add('bottle-hovering');
+        } else {
+          bottle1.classList.remove('bottle-hovering');
+          bottle.classList.remove('bottle-hovering');
+        }
+      }
 
-      // Set the image at the start position
-      img.style.left = start.x + 'px';
-      img.style.top = start.y + 'px';
+      // Add event listeners to both bottles
+      [bottle1, bottle].forEach(el => {
+        el.addEventListener('mouseenter', () => setBottlesHoverState(true));
+        el.addEventListener('mouseleave', () => setBottlesHoverState(false));
+        // For touch devices: touchstart/touchend
+        el.addEventListener('touchstart', () => setBottlesHoverState(true), {passive:true});
+        el.addEventListener('touchend', () => setBottlesHoverState(false), {passive:true});
+        el.addEventListener('touchcancel', () => setBottlesHoverState(false), {passive:true});
+      });
 
-      // Set CSS variables for animation
-      img.style.setProperty('--start-x', '0px');
-      img.style.setProperty('--start-y', '0px');
-      img.style.setProperty('--end-x', (end.x - start.x) + 'px');
-      img.style.setProperty('--end-y', (end.y - start.y) + 'px');
-      // Make duration longer and more consistent for smoothness
-      img.style.setProperty('--duration', (5 + Math.random() * 2) + 's');
-      // Make animation delay less abrupt
-      img.style.animationDelay = (Math.random() * 1.5) + 's';
+      // 5 dona donai anor.png sarte, rotate, kush-ku, plavno, boloi hama obektho, ohista holyam va kamtar kalon shavad
+      const anorContainer = document.getElementById('anor-random-container');
+      const imgCount = 5;
+      const imgWidth = 390;   // KAMTAR KALON: smaller size
+      const imgHeight = 390;
 
-      img.classList.add('anim-scaleUpDown', 'anor-move');
-      anorContainer.appendChild(img);
-    }
+      for (let i = 0; i < imgCount; i++) {
+        const img = document.createElement('img');
+        img.src = 'assets/donai anor.png';
+        img.alt = 'Anor Random';
+        img.style.width = imgWidth + 'px';
+        img.style.height = imgHeight + 'px';
+        img.style.position = 'absolute';
+        img.style.pointerEvents = 'none';
+        img.style.zIndex = '1000';
+
+        // Get two random edge positions for animation start and end
+        const start = getRandomEdgePosition(imgWidth, imgHeight);
+        let end;
+        // Ensure end is not too close to start
+        do {
+          end = getRandomEdgePosition(imgWidth, imgHeight);
+        } while (Math.abs(end.x - start.x) < 100 && Math.abs(end.y - start.y) < 100);
+
+        // Set the image at the start position
+        img.style.left = start.x + 'px';
+        img.style.top = start.y + 'px';
+
+        // Set CSS variables for animation
+        img.style.setProperty('--start-x', '0px');
+        img.style.setProperty('--start-y', '0px');
+        img.style.setProperty('--end-x', (end.x - start.x) + 'px');
+        img.style.setProperty('--end-y', (end.y - start.y) + 'px');
+        // Make duration LONGER for "ohista" (slow)
+        img.style.setProperty('--duration', (11 + Math.random() * 2) + 's');
+        // Make animation delay less abrupt
+        img.style.animationDelay = (Math.random() * 2.5) + 's';
+
+        // Add rotation for each anor
+        const startRot = Math.floor(Math.random() * 360);
+        const endRot = startRot + 360 + Math.floor(Math.random() * 180); // rotate at least 1 full turn, up to 1.5
+        img.style.setProperty('--start-rot', startRot + 'deg');
+        img.style.setProperty('--end-rot', endRot + 'deg');
+
+        img.classList.add('anor-move');
+        anorContainer.appendChild(img);
+      }
+
+      // No need to freeze ice at end, animation handles it and floats forever
+    });
   </script>
+  <style>
+    /* Add this style block for joint hover effect */
+    #bottle.bottle-hovering.anim-bottle-float,
+    #bottle1.bottle-hovering.anim-bottle-float {
+      animation: bottleFloatHover 2.2s cubic-bezier(0.4,0,0.2,1) infinite !important;
+      /* On hover, animation is faster and more visible */
+    }
+  </style>
 </body>
 </html>
